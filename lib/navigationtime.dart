@@ -11,7 +11,7 @@ class TimingNavigatorObserver extends NavigatorObserver {
     if (startTime != null) {
       final endTime = DateTime.now();
       final duration = endTime.difference(startTime!);
-      print('Time taken to navigate: ${duration.inMilliseconds} ms');
+      print('Time taken to navigate: ${duration.inSeconds} secs');
       startTime = null;
     }
   }
