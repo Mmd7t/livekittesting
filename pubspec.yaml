@@ -20,7 +20,8 @@ dependencies:
   flutter_svg: ^1.0.0
   livekit_client: ^2.2.0
   dio: ^5.4.3+1
-
+  socket_io_client: ^2.0.3+1
+  flutter_callkit_incoming: ^2.0.4+1
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -16,6 +16,7 @@ class ApiCalls {
       {required String authToken,
       required String roomName,
       required String participantIdentity}) async {
+         final starttime = DateTime.now();
     Response res = await dio.post(
       '/generateTokenForRoom',
       data: {
@@ -25,6 +26,9 @@ class ApiCalls {
       },
       options: Options(headers: {'Authorization': authToken}),
     );
+      final endtime=DateTime.now();
+    final duration = starttime.difference(endtime);
+    print('Time taken for createroom ${duration.inSeconds} secs');
     if (res.statusCode != 201) {
       return null;
     } else {
@@ -38,6 +42,7 @@ class ApiCalls {
       required String roomName,
       required String participantIdentity}) async {
     log('Start Generating');
+    final starttime = DateTime.now();
     Response res = await dio.post(
       '/generateLKToken',
       data: {
@@ -46,6 +51,9 @@ class ApiCalls {
       },
       options: Options(headers: {'Authorization': authToken}),
     );
+    final endtime=DateTime.now();
+    final duration = starttime.difference(endtime);
+    print('Time taken for generatelktoken ${duration.inSeconds} secs');
     if (res.statusCode != 201) {
       log('Generate LK Access Token ${res.statusCode}');
       log('Generate LK Access Token ${res.data}');
