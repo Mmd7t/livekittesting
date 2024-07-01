@@ -17,14 +17,13 @@ class ConnectPage extends StatefulWidget {
 }
 
 class _ConnectPageState extends State<ConnectPage> {
-  bool _createRoomBusy = false;
-  bool _joinRoomBusy = false;
+  bool _busy = false;
   String livekitToken = '';
-  Future<void> _connect(BuildContext ctx, bool isItCreatingtheCall) async {
+  Future<void> _connect(
+      BuildContext ctx, bool isItCreatingtheCall, bool isItVoiceCall) async {
     try {
       setState(() {
-        _createRoomBusy = true;
-        _joinRoomBusy = true;
+        _busy = true;
       });
 
       if (isItCreatingtheCall) {
@@ -78,15 +77,15 @@ class _ConnectPageState extends State<ConnectPage> {
       );
       await Navigator.push<void>(
         ctx,
-        MaterialPageRoute(builder: (_) => RoomPage(room, listener)),
+        MaterialPageRoute(
+            builder: (_) => RoomPage(room, listener, isItVoiceCall)),
       );
     } catch (error) {
       print('Could not connect $error');
       await ctx.showErrorDialog(error);
     } finally {
       setState(() {
-        _createRoomBusy = false;
-        _joinRoomBusy = false;
+        _busy = false;
       });
     }
   }
@@ -104,7 +103,7 @@ class _ConnectPageState extends State<ConnectPage> {
               constraints: const BoxConstraints(maxWidth: 400),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(bottom: 70),
@@ -112,50 +111,128 @@ class _ConnectPageState extends State<ConnectPage> {
                       'images/logo-dark.svg',
                     ),
                   ),
-                  ElevatedButton(
-                    onPressed:
-                        _createRoomBusy ? null : () => _connect(context, true),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        if (_createRoomBusy)
-                          const Padding(
-                            padding: EdgeInsets.only(right: 10),
-                            child: SizedBox(
-                              height: 15,
-                              width: 15,
-                              child: CircularProgressIndicator(
-                                color: Colors.white,
-                                strokeWidth: 2,
-                              ),
-                            ),
-                          ),
-                        const Text('Create The Call'),
-                      ],
-                    ),
+                  const Text(
+                    'Create The Call',
+                    style: TextStyle(color: Colors.white),
                   ),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed:
-                        _joinRoomBusy ? null : () => _connect(context, false),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        if (_joinRoomBusy)
-                          const Padding(
-                            padding: EdgeInsets.only(right: 10),
-                            child: SizedBox(
-                              height: 15,
-                              width: 15,
-                              child: CircularProgressIndicator(
-                                color: Colors.white,
-                                strokeWidth: 2,
-                              ),
-                            ),
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: _busy
+                              ? null
+                              : () => _connect(context, true, true),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              if (_busy)
+                                const Padding(
+                                  padding: EdgeInsets.only(right: 10),
+                                  child: SizedBox(
+                                    height: 15,
+                                    width: 15,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                      strokeWidth: 2,
+                                    ),
+                                  ),
+                                ),
+                              const Text('Voice Call'),
+                            ],
                           ),
-                        const Text('Join The Call'),
-                      ],
-                    ),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: _busy
+                              ? null
+                              : () => _connect(context, true, false),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              if (_busy)
+                                const Padding(
+                                  padding: EdgeInsets.only(right: 10),
+                                  child: SizedBox(
+                                    height: 15,
+                                    width: 15,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                      strokeWidth: 2,
+                                    ),
+                                  ),
+                                ),
+                              const Text('Video Call'),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 30),
+                  const Text(
+                    'Join The Call',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: _busy
+                              ? null
+                              : () => _connect(context, false, true),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              if (_busy)
+                                const Padding(
+                                  padding: EdgeInsets.only(right: 10),
+                                  child: SizedBox(
+                                    height: 15,
+                                    width: 15,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                      strokeWidth: 2,
+                                    ),
+                                  ),
+                                ),
+                              const Text('Voice Call'),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: _busy
+                              ? null
+                              : () => _connect(context, false, false),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              if (_busy)
+                                const Padding(
+                                  padding: EdgeInsets.only(right: 10),
+                                  child: SizedBox(
+                                    height: 15,
+                                    width: 15,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                      strokeWidth: 2,
+                                    ),
+                                  ),
+                                ),
+                              const Text('Video Call'),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
