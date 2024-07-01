@@ -3,6 +3,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:livekit_client/livekit_client.dart';
+import 'package:livekit_example/navigationtime.dart';
 
 import '../exts.dart';
 import '../widgets/controls.dart';
@@ -13,10 +14,11 @@ class RoomPage extends StatefulWidget {
   //
   final Room room;
   final EventsListener<RoomEvent> listener;
-
+ final TimingNavigatorObserver timingObserver;
   const RoomPage(
     this.room,
-    this.listener, {
+    this.listener,
+     {required this.timingObserver,
     Key? key,
   }) : super(key: key);
 
@@ -32,6 +34,7 @@ class _RoomPageState extends State<RoomPage> {
   @override
   void initState() {
     super.initState();
+     widget.timingObserver.logDuration();
     widget.room.addListener(_onRoomDidUpdate);
     _setUpListeners();
     _sortParticipants();

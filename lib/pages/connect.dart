@@ -2,16 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:livekit_client/livekit_client.dart';
 import 'package:livekit_example/agents/api_calls.dart';
+import 'package:livekit_example/navigationtime.dart';
 
 import '../exts.dart';
 import 'room.dart';
 
 class ConnectPage extends StatefulWidget {
   //
-  const ConnectPage({
-    Key? key,
+   ConnectPage({
+    Key? key,required this.timingObserver
   }) : super(key: key);
-
+ final TimingNavigatorObserver timingObserver;
   @override
   State<StatefulWidget> createState() => _ConnectPageState();
 }
@@ -76,10 +77,12 @@ class _ConnectPageState extends State<ConnectPage> {
           camera: const TrackOption(enabled: true),
         ),
       );
+       widget.timingObserver.startTiming();
       await Navigator.push<void>(
         ctx,
-        MaterialPageRoute(builder: (_) => RoomPage(room, listener)),
+        MaterialPageRoute(builder: (_) => RoomPage(room, listener,timingObserver: widget.timingObserver)),
       );
+      
     } catch (error) {
       print('Could not connect $error');
       await ctx.showErrorDialog(error);

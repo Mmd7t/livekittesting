@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:livekit_example/navigationtime.dart';
 import 'package:livekit_example/theme.dart';
 import 'package:logging/logging.dart';
 import 'package:intl/intl.dart';
@@ -14,19 +15,20 @@ void main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
 
-  runApp(const LiveKitExampleApp());
+  runApp( LiveKitExampleApp());
 }
 
 class LiveKitExampleApp extends StatelessWidget {
   //
-  const LiveKitExampleApp({
+   LiveKitExampleApp({
     Key? key,
   }) : super(key: key);
-
+final TimingNavigatorObserver timingObserver = TimingNavigatorObserver();
   @override
   Widget build(BuildContext context) => MaterialApp(
+    navigatorObservers: [timingObserver],
         title: 'LiveKit',
         theme: LiveKitTheme().buildThemeData(context),
-        home: const ConnectPage(),
+        home:  ConnectPage(timingObserver: timingObserver),
       );
 }
