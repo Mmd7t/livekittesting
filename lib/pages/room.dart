@@ -14,12 +14,16 @@ class RoomPage extends StatefulWidget {
   //
   final Room room;
   final EventsListener<RoomEvent> listener;
+    final bool isItVoiceCall;
+
  final TimingNavigatorObserver timingObserver;
+
   const RoomPage(
     this.room,
     this.listener,
-     {required this.timingObserver,
+    this.isItVoiceCall, {
     Key? key,
+    required this.timingObserver,
   }) : super(key: key);
 
   @override
@@ -38,9 +42,16 @@ class _RoomPageState extends State<RoomPage> {
     widget.room.addListener(_onRoomDidUpdate);
     _setUpListeners();
     _sortParticipants();
-    WidgetsBindingCompatible.instance?.addPostFrameCallback((_) {
+    WidgetsBindingCompatible.instance?.addPostFrameCallback((_) async {
       if (!fastConnection) {
         _askPublish();
+      } else {
+        await widget.room.localParticipant!.setMicrophoneEnabled(true);
+        if (widget.isItVoiceCall) {
+          await widget.room.localParticipant!.setCameraEnabled(false);
+        } else {
+          await widget.room.localParticipant!.setCameraEnabled(true);
+        }
       }
     });
   }
@@ -78,7 +89,11 @@ class _RoomPageState extends State<RoomPage> {
     if (result != true) return;
     // video will fail when running in ios simulator
     try {
-      await widget.room.localParticipant?.setCameraEnabled(true);
+      if (widget.isItVoiceCall) {
+        await widget.room.localParticipant!.setCameraEnabled(false);
+      } else {
+        await widget.room.localParticipant!.setCameraEnabled(true);
+      }
     } catch (error) {
       print('could not publish video: $error');
       await context.showErrorDialog(error);
@@ -144,7 +159,8 @@ class _RoomPageState extends State<RoomPage> {
           b.participant.joinedAt.millisecondsSinceEpoch;
     });
 
-    final localParticipantTracks = widget.room.localParticipant?.videoTrackPublications;
+    final localParticipantTracks =
+        widget.room.localParticipant?.videoTrackPublications;
     if (localParticipantTracks != null) {
       for (var t in localParticipantTracks) {
         if (t.isScreenShare) {
